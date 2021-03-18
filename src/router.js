@@ -3,7 +3,7 @@ const { youtube_dl: youtube_dl_repo } = require('./repository/youtube-dl');
 const { youtube_controller } = require('./controller/youtube-controller');
 const yt_controller = youtube_controller(youtube_dl_repo(Commander('youtube-dl')));
 
-const bindRoutesToControllers = ({ youtube_app }) => {
+const bind_routes_to_controller = ({ youtube_app }) => {
     // YOUTUBE ROUTES
     {
         // get formats for a video
@@ -18,5 +18,5 @@ const bindRoutesToControllers = ({ youtube_app }) => {
 };
 
 module.exports = {
-    bindRoutesToControllers,
+     bind_routes_to_controller,
 };
