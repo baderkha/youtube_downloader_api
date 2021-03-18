@@ -1,6 +1,4 @@
-const shell = require('child_process');
 const express = require('express');
-const { format } = require('path');
 const app = express();
 const { uuid } = require('uuidv4');
 const PORT = 8080;
