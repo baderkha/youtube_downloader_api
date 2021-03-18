@@ -2,8 +2,7 @@ const { Commander } = require('../util/commander');
 const DOWNLOAD_PATH = '/tmp/youtube-dl-api'
 
 
-const youtube_dl = () => {
-    const program = Commander('youtube-dl');
+const youtube_dl = (program) => {
     return {
         generate_url_for_video_id : (id) => {
             return `https://www.youtube.com/watch?v=${id}`
