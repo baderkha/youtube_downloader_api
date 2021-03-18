@@ -1,4 +1,5 @@
 const { Commander } = require('./commander');
+const DOWNLOAD_PATH = '/tmp/youtube-dl-api'
 
 const youtube_dl = () => {
     const program = Commander('youtube-dl');
@@ -16,7 +17,7 @@ const youtube_dl = () => {
                     `${file_name}.%(ext)s`,
                     `${video_link}`,
                 ])
-                .then((response) => response.split('\n')[0]);
+                .then((response) => DOWNLOAD_PATH+'/'+response.split('\n')[0]);
         },
         get_video_formats_by_video_link: (video_link) => {
             return program.executeCommand(['-F', video_link]).then((response) => {
@@ -35,7 +36,7 @@ const youtube_dl = () => {
                 format_id,
                 video_link,
                 '--output',
-                `${file_name}.%(ext)s`,
+                `${DOWNLOAD_PATH}/${file_name}.%(ext)s`,
             ]);
         },
     };
