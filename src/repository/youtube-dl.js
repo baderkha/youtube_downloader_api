@@ -20,14 +20,16 @@ const youtube_dl_repo = (program) => {
                 .then((response) => DOWNLOAD_PATH + '/' + response.split('\n')[0]);
         },
         get_video_formats_by_video_link: (video_link) => {
-            return program.executeCommand(['-F', video_link]).then((response) => {
-                return response
-                    .split('\n')
-                    .filter((value, i, ar) => i > 2 && i != ar.length - 1)
-                    .map((value) => ({
-                        format_id: value.split(' ')[0],
-                        record: value,
-                    }));
+            return program.executeCommand(['--dump-json', video_link]).then((response) => {
+                let res = JSON.parse(response);
+                return res.formats.map((data) => {
+                    return {
+                        ...data,
+                        filesize: data.filesize
+                            ? (data.filesize / (1024 * 1024)).toFixed(2)
+                            : 'unknown',
+                    };
+                });
             });
         },
         download_video_by_format_id: (format_id, video_link) => {
