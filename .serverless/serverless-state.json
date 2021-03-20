@@ -180,7 +180,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
-                "ImageUri": "210486670813.dkr.ecr.us-east-1.amazonaws.com/serverless-youtube-downloader-api-dev@sha256:a898a3d6b1d65c9c037f34355e24d3a3f37efed7a8e70abc33b71b8f0b0d45bc"
+                "ImageUri": "210486670813.dkr.ecr.us-east-1.amazonaws.com/serverless-youtube-downloader-api-dev@sha256:c369c89d7915dd723450de5c999a517b6cce42208b67baabed088cd77eb3c86f"
               },
               "PackageType": "Image",
               "FunctionName": "youtube-downloader-api-dev-downloader_api",
@@ -197,14 +197,14 @@
               "DownloaderUnderscoreapiLogGroup"
             ]
           },
-          "DownloaderUnderscoreapiLambdaVersionTzKA3aN70DvrCXKiOQzz04QWLpeKXVe4nbjMJSuCbM": {
+          "DownloaderUnderscoreapiLambdaVersion4x7HSL8hUcvRcabk9ky014YLZ8uaK2rDMfMrvuXUQ5E": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DownloaderUnderscoreapiLambdaFunction"
               },
-              "CodeSha256": "a898a3d6b1d65c9c037f34355e24d3a3f37efed7a8e70abc33b71b8f0b0d45bc"
+              "CodeSha256": "c369c89d7915dd723450de5c999a517b6cce42208b67baabed088cd77eb3c86f"
             }
           },
           "ApiGatewayRestApi": {
@@ -229,6 +229,99 @@
                 ]
               },
               "PathPart": "{proxy+}",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,GET,HEAD,PATCH,POST,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Fn::GetAtt": [
+                  "ApiGatewayRestApi",
+                  "RootResourceId"
+                ]
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodProxyVarOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,DELETE,GET,HEAD,PATCH,POST,PUT'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceProxyVar"
+              },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -323,7 +416,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1616204878811": {
+          "ApiGatewayDeployment1616209820765": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -332,6 +425,8 @@
               "StageName": "dev"
             },
             "DependsOn": [
+              "ApiGatewayMethodOptions",
+              "ApiGatewayMethodProxyVarOptions",
               "ApiGatewayMethodAny",
               "ApiGatewayMethodProxyVarAny"
             ]
@@ -383,7 +478,7 @@
           "DownloaderUnderscoreapiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DownloaderUnderscoreapiLambdaVersionTzKA3aN70DvrCXKiOQzz04QWLpeKXVe4nbjMJSuCbM"
+              "Ref": "DownloaderUnderscoreapiLambdaVersion4x7HSL8hUcvRcabk9ky014YLZ8uaK2rDMfMrvuXUQ5E"
             }
           },
           "ServiceEndpoint": {
@@ -506,6 +601,25 @@
             "http": {
               "path": "",
               "method": "any",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "ANY"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
               "integration": "AWS_PROXY"
             }
           },
@@ -513,6 +627,25 @@
             "http": {
               "path": "{proxy+}",
               "method": "any",
+              "cors": {
+                "origins": [
+                  "*"
+                ],
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "ANY"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent"
+                ],
+                "allowCredentials": false
+              },
               "integration": "AWS_PROXY"
             }
           }
@@ -522,7 +655,7 @@
         "memory": 1500,
         "timeout": 300,
         "vpc": {},
-        "versionLogicalId": "DownloaderUnderscoreapiLambdaVersionTzKA3aN70DvrCXKiOQzz04QWLpeKXVe4nbjMJSuCbM"
+        "versionLogicalId": "DownloaderUnderscoreapiLambdaVersion4x7HSL8hUcvRcabk9ky014YLZ8uaK2rDMfMrvuXUQ5E"
       }
     },
     "configValidationMode": "warn",
@@ -542,7 +675,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/youtube-downloader-api/dev/1616204879889-2021-03-20T01:47:59.889Z",
+    "artifactDirectoryName": "serverless/youtube-downloader-api/dev/1616209821910-2021-03-20T03:10:21.910Z",
     "artifact": ""
   }
 }

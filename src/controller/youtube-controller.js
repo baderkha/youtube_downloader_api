@@ -1,10 +1,44 @@
 const { bad_response } = require('../util/api');
-const {uuid} = require('uuidv4');
+const { uuid } = require('uuidv4');
 
 /**
- * @param {} youtube_dl_repo 
+ * @param {} youtube_dl_repo
  */
-const youtube_controller = (youtube_dl_repo) => {
+const youtube_controller = (youtube_dl_repo, s3_repo) => {
+    const handle_download = async ({ file_name, format_id, video_link }, res) => {
+        try {
+            console.log('Cache miss , downloading from youtube');
+            await youtube_dl_repo.download_video_by_format_id(format_id, video_link);
+            await s3_repo.upload_file(file_name);
+            let data = await s3_repo.get_download_link_for_file(file_name);
+            res.send(data);
+        } catch (err) {
+            res.status(500).send(
+                bad_response(
+                    500,
+                    'Could not Contact youtube servers for download file / or could not contact s3 for upload file, this is an internal error' +
+                        err
+                )
+            );
+        }
+    };
+    const handle_cache_download = async (file_name, res) => {
+        console.log('Grabbing file from cache');
+        return s3_repo
+            .get_download_link_for_file(file_name)
+            .then((data) => {
+                res.send(data);
+            })
+            .catch((err) => {
+                res.status(500).send(
+                    bad_response(
+                        500,
+                        'Could not Generate an s3 presigned url , tis is an internal error' + err
+                    )
+                );
+            });
+    };
+
     return {
         /**
          * fetch the formats for a video
@@ -16,7 +50,9 @@ const youtube_controller = (youtube_dl_repo) => {
 
             const youtube_formats = await youtube_dl_repo
                 .get_video_formats_by_video_link(video_link)
-                .catch((err) => bad_response(404, 'could not get format information about video'+err));
+                .catch((err) =>
+                    bad_response(404, 'could not get format information about video' + err)
+                );
 
             if (youtube_formats.isError) {
                 return res.status(404).send(youtube_formats);
@@ -39,9 +75,8 @@ const youtube_controller = (youtube_dl_repo) => {
                 return;
             }
 
-            const file_prefix = uuid();
             const file_name = await youtube_dl_repo
-                .get_file_name_for_download_by_format_id(format_id, video_link, file_prefix)
+                .get_file_name_for_download_by_format_id(format_id, video_link)
                 .catch((err) => err);
 
             // guard check file name
@@ -55,16 +90,11 @@ const youtube_controller = (youtube_dl_repo) => {
                 return;
             }
 
-            await youtube_dl_repo
-                .download_video_by_format_id(format_id, video_link, file_prefix)
-                .then(() => {
-                    res.download(file_name);
-                })
-                .catch(() => {
-                    res.status(500).send(
-                        bad_response(500, 'Could not download file , this is an internal issue')
-                    );
-                });
+            // download from s3 cache , best case scenario
+            if (await s3_repo.check_file_exists(file_name)) {
+                return await handle_cache_download(file_name, res);
+            }
+            return await handle_download({ file_name, format_id, video_link }, res);
         },
     };
 };

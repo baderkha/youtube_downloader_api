@@ -1,7 +1,11 @@
 const { Commander } = require('./util/commander');
 const { youtube_dl: youtube_dl_repo } = require('./repository/youtube-dl');
 const { youtube_controller } = require('./controller/youtube-controller');
-const yt_controller = youtube_controller(youtube_dl_repo(Commander('youtube-dl')));
+const { s3_repo } = require('./repository/s3-repository');
+const yt_controller = youtube_controller(
+    youtube_dl_repo(Commander('youtube-dl')),
+    s3_repo('ydl-downloads')
+);
 
 const bind_routes_to_controller = ({ youtube_app }) => {
     // YOUTUBE ROUTES
@@ -18,5 +22,5 @@ const bind_routes_to_controller = ({ youtube_app }) => {
 };
 
 module.exports = {
-     bind_routes_to_controller,
+    bind_routes_to_controller,
 };
