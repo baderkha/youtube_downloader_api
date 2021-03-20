@@ -16,7 +16,7 @@ const youtube_controller = (youtube_dl_repo) => {
 
             const youtube_formats = await youtube_dl_repo
                 .get_video_formats_by_video_link(video_link)
-                .catch(() => bad_response(404, 'could not get format information about video'));
+                .catch((err) => bad_response(404, 'could not get format information about video'+err));
 
             if (youtube_formats.isError) {
                 return res.status(404).send(youtube_formats);

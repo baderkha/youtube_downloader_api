@@ -4,13 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "isLocal=1 node index.js",
+    "deploy" : "node ./node_modules/serverless/bin/serverless.js deploy"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "const": "^1.0.0",
     "express": "^4.17.1",
+    "serverless-http": "^2.7.0",
     "uuidv4": "^6.2.6"
+  },
+  "devDependencies": {
+    "serverless": "^2.30.3"
   }
 }

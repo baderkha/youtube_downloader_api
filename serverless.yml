@@ -1,0 +1,23 @@
+service: youtube-downloader-api
+
+provider:
+    name: aws
+    runtime: nodejs12.x
+    memorySize: 1500
+    timeout: 300
+    ecr:
+        images:
+            youtube-downloader-api:
+                path: ./
+
+functions:
+    downloader_api:
+        image:
+            name: youtube-downloader-api
+        events:
+             - http:
+                  path: /
+                  method: any
+             - http:
+                  path: /{proxy+}
+                  method: any
