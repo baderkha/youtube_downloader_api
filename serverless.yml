@@ -5,6 +5,13 @@ provider:
     runtime: nodejs12.x
     memorySize: 1500
     timeout: 300
+    iam:
+        role:
+            statements:
+                - Effect: 'Allow'
+                  Action:
+                      - 's3:*'
+                  Resource: '*'
     ecr:
         images:
             youtube-downloader-api:
@@ -15,11 +22,11 @@ functions:
         image:
             name: youtube-downloader-api
         events:
-             - http:
+            - http:
                   path: /
                   method: any
-                  cors : true
-             - http:
+                  cors: true
+            - http:
                   path: /{proxy+}
                   method: any
-                  cors : true
+                  cors: true

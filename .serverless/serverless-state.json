@@ -9,6 +9,19 @@
       "runtime": "nodejs12.x",
       "memorySize": 1500,
       "timeout": 300,
+      "iam": {
+        "role": {
+          "statements": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:*"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      },
       "ecr": {
         "images": {
           "youtube-downloader-api": {
@@ -155,6 +168,9 @@
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/youtube-downloader-api-dev*:*:*"
                           }
                         ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
                       }
                     ]
                   }
@@ -180,7 +196,7 @@
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
-                "ImageUri": "210486670813.dkr.ecr.us-east-1.amazonaws.com/serverless-youtube-downloader-api-dev@sha256:c369c89d7915dd723450de5c999a517b6cce42208b67baabed088cd77eb3c86f"
+                "ImageUri": "210486670813.dkr.ecr.us-east-1.amazonaws.com/serverless-youtube-downloader-api-dev@sha256:0b9ac5f339e50a16b66c6d65a58249273f570c63832efb85bd24b469bba3ad27"
               },
               "PackageType": "Image",
               "FunctionName": "youtube-downloader-api-dev-downloader_api",
@@ -197,14 +213,14 @@
               "DownloaderUnderscoreapiLogGroup"
             ]
           },
-          "DownloaderUnderscoreapiLambdaVersion4x7HSL8hUcvRcabk9ky014YLZ8uaK2rDMfMrvuXUQ5E": {
+          "DownloaderUnderscoreapiLambdaVersionnsooEdPiFk8ORX4J4Mmkzc6ET0I6AsK1GDMtoss0Y": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DownloaderUnderscoreapiLambdaFunction"
               },
-              "CodeSha256": "c369c89d7915dd723450de5c999a517b6cce42208b67baabed088cd77eb3c86f"
+              "CodeSha256": "0b9ac5f339e50a16b66c6d65a58249273f570c63832efb85bd24b469bba3ad27"
             }
           },
           "ApiGatewayRestApi": {
@@ -416,7 +432,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1616209820765": {
+          "ApiGatewayDeployment1616253704367": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -478,7 +494,7 @@
           "DownloaderUnderscoreapiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DownloaderUnderscoreapiLambdaVersion4x7HSL8hUcvRcabk9ky014YLZ8uaK2rDMfMrvuXUQ5E"
+              "Ref": "DownloaderUnderscoreapiLambdaVersionnsooEdPiFk8ORX4J4Mmkzc6ET0I6AsK1GDMtoss0Y"
             }
           },
           "ServiceEndpoint": {
@@ -655,7 +671,7 @@
         "memory": 1500,
         "timeout": 300,
         "vpc": {},
-        "versionLogicalId": "DownloaderUnderscoreapiLambdaVersion4x7HSL8hUcvRcabk9ky014YLZ8uaK2rDMfMrvuXUQ5E"
+        "versionLogicalId": "DownloaderUnderscoreapiLambdaVersionnsooEdPiFk8ORX4J4Mmkzc6ET0I6AsK1GDMtoss0Y"
       }
     },
     "configValidationMode": "warn",
@@ -675,7 +691,7 @@
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
-    "artifactDirectoryName": "serverless/youtube-downloader-api/dev/1616209821910-2021-03-20T03:10:21.910Z",
+    "artifactDirectoryName": "serverless/youtube-downloader-api/dev/1616253705522-2021-03-20T15:21:45.522Z",
     "artifact": ""
   }
 }
