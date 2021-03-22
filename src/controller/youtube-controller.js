@@ -66,7 +66,9 @@ const youtube_controller = (youtube_dl_repo, s3_repo) => {
                 .get_thumbnail_by_video_link(video_link)
                 .then((response) => res.send([response]))
                 .catch((err) =>
-                    res.status(404).send('could not find a thumnail for this video' + err)
+                    res
+                        .status(404)
+                        .send(bad_response(404, 'could not find a thumnail for this video' + err))
                 );
         },
         /**
