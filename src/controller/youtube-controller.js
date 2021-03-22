@@ -60,6 +60,15 @@ const youtube_controller = (youtube_dl_repo, s3_repo) => {
 
             res.json(youtube_formats);
         },
+        get_thumbnail: async (req, res) => {
+            const video_link = youtube_dl_repo.generate_url_for_video_id(req.params.id);
+            return await youtube_dl_repo
+                .get_thumbnail_by_video_link(video_link)
+                .then((response) => res.send([response]))
+                .catch((err) =>
+                    res.status(404).send('could not find a thumnail for this video' + err)
+                );
+        },
         /**
          * Download a youtube video
          * @param {Express.Request} req

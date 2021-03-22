@@ -12,6 +12,7 @@ const bind_routes_to_controller = ({ youtube_app }) => {
     {
         // get formats for a video
         youtube_app.get('/:id/formats', yt_controller.get_formats);
+        youtube_app.get('/:id/thumbnails', yt_controller.get_thumbnail);
         // downlod video
         youtube_app.get('/:id', yt_controller.download_video);
     }

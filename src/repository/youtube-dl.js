@@ -41,6 +41,9 @@ const youtube_dl_repo = (program) => {
                 `${DOWNLOAD_PATH}/%(title)s-%(format_id)s-%(upload_date)s-%(id)s.%(ext)s`,
             ]);
         },
+        get_thumbnail_by_video_link: (video_link) => {
+            return program.executeCommand(['--get-thumbnail', video_link]).then((url) => ({ url }));
+        },
     };
 };
 
