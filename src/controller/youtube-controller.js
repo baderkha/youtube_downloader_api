@@ -41,6 +41,24 @@ const youtube_controller = (youtube_dl_repo, s3_repo) => {
 
     return {
         /**
+         * Fetch info for a video
+         * @param {*} req 
+         * @param {*} res 
+         * @returns 
+         */
+        get_info: async (req, res) => {
+            const video_link = youtube_dl_repo.generate_url_for_video_id(req.params.id);
+            const video_profile = await youtube_dl_repo
+                .get_video_info_by_link(video_link)
+                .catch((err) =>
+                    bad_response(404, 'could not get format information about video' + err)
+                );
+            if (video_profile.isError) {
+                return res.status(404).send(video_profile);
+            }
+            res.json(video_profile);
+        },
+        /**
          * fetch the formats for a video
          * @param {Express.Request} req
          * @param {Express.Response} res

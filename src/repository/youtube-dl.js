@@ -32,6 +32,25 @@ const youtube_dl_repo = (program) => {
                 });
             });
         },
+        get_video_info_by_link: (video_link) => {
+            return program.executeCommand(['--dump-json', video_link]).then((response) => {
+                let res = JSON.parse(response);
+                return {
+                    uploader: res.uploader,
+                    uploader_id: res.uploader_id,
+                    title: res.title,
+                    thumnail_url: res.thumbnails.pop().url,
+                    date_uploaded: res.upload_date,
+                    description: res.description,
+                    duration_seconds: `${res.duration}`,
+                    duration_minutes: Math.round(res.duration / 60).toFixed(2),
+                    views: res.view_count,
+                    likes: res.like_count,
+                    dislikes: res.dislike_count,
+                    rating: res.average_rating,
+                };
+            });
+        },
         download_video_by_format_id: (format_id, video_link) => {
             return program.executeCommand([
                 '-f',
@@ -46,6 +65,7 @@ const youtube_dl_repo = (program) => {
         },
     };
 };
+
 
 module.exports = {
     youtube_dl: youtube_dl_repo,
