@@ -1,5 +1,6 @@
 const { bad_response } = require('../util/api');
 const { uuid } = require('uuidv4');
+const fs = require('fs')
 
 /**
  * @param {} youtube_dl_repo
@@ -11,6 +12,7 @@ const youtube_controller = (youtube_dl_repo, s3_repo) => {
             await youtube_dl_repo.download_video_by_format_id(format_id, video_link);
             await s3_repo.upload_file(file_name);
             let data = await s3_repo.get_download_link_for_file(file_name);
+            fs.unlinkSync(file_name);
             res.send(data);
         } catch (err) {
             res.status(500).send(
